@@ -4,19 +4,33 @@ import di.AdbApplication
 import domain.DeviceRepository
 import domain.model.RecordingRequest
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import ui.components.ComposePresenter
+import videoprocessing.PipelineResult
+import videoprocessing.pipeline
+import videoprocessing.processors.CompressionProcessor
+import videoprocessing.processors.GifProcessor
+import java.io.File
 import java.util.*
 
 class ScreenRecordPresenter(
-  private val app: AdbApplication
+  private val app: AdbApplication,
+  private val outputDir: File = File("./recordings"),
 ) : ComposePresenter<State>(State.Setup) {
   private val deviceRepository by inject<DeviceRepository>()
 
+  // TODO: Maybe inject this
+  private val pipeline = pipeline(
+    CompressionProcessor(outputDir),
+    GifProcessor(outputDir),
+  )
+
   private var recordingOutputJob: Job? = null
   private var activeFilename: String? = null
+
 
   fun startRecording() {
     scope.launch {
@@ -39,9 +53,6 @@ class ScreenRecordPresenter(
           activeFilename = null
           _state.value = State.Error
         }
-        .onCompletion {
-          _state.value = State.Processing
-        }
         .launchIn(scope)
     }
   }
@@ -53,18 +64,22 @@ class ScreenRecordPresenter(
     if (activeFilename != null) {
       scope.launch {
         val selectedDevice = app.selectedDevice.value ?: return@launch
+        _state.value = State.Processing("Waiting for device...")
+
+        // Artificial delay giving the device time to process and finish screen recording
+        delay(5000L)
+
         val file = deviceRepository.pullRecordingFromDevice(selectedDevice.device.serial, activeFilename!!)
         if (file != null) {
-          println("Recording pulled! ${file.absolutePath}")
-          // TODO: Send to FFMPEG or Handbrake to compress the video
+          _state.value = State.Processing("Processing recording...")
 
-          // TODO: Send to tool to make a gif
+          println("Recording pulled! ${file.absolutePath}")
+          val output = pipeline.process(file)
 
           // Update state to processed
           _state.value = State.Recorded(
-            videoPath = file.absolutePath,
-            compressedVideoPath = null,
-            gifPath = null,
+            video = output.final,
+            result = output,
           )
         }
       }
@@ -81,11 +96,12 @@ sealed class State {
     val currentOutput: String? = null
   ) : State()
 
-  object Processing : State()
+  class Processing(
+    val message: String
+  ) : State()
 
   data class Recorded(
-    val videoPath: String,
-    val compressedVideoPath: String?,
-    val gifPath: String?,
+    val video: File,
+    val result: PipelineResult,
   ) : State()
 }

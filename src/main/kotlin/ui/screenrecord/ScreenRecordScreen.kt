@@ -10,15 +10,15 @@ import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import di.LocalApplication
 import domain.model.VideoSize
 import router.BackStack
 import ui.Routing
 import ui.widgets.EmptyState
+import videoprocessing.PipelineResult
 
 @Composable
 fun ScreenRecordScreen(backStack: BackStack<Routing>) {
@@ -43,12 +43,8 @@ fun ScreenRecordScreen(backStack: BackStack<Routing>) {
     is State.Recording -> RecordingInProgress(state) {
       presenter.stopRecording()
     }
-    State.Processing -> {
-
-    }
-    is State.Recorded -> {
-
-    }
+    is State.Processing -> Processing(state.message)
+    is State.Recorded -> RecordingFinished(state.result)
   }
 }
 
@@ -155,6 +151,33 @@ private fun RecordingInProgress(
     Divider()
     state.currentOutput?.let {
       Text(it)
+    }
+  }
+}
+
+@Composable
+private fun Processing(message: String) {
+  Box(
+    modifier = Modifier.fillMaxSize(),
+    contentAlignment = Alignment.Center
+  ) {
+    Text(
+      text = message,
+    )
+  }
+}
+
+@Composable
+private fun RecordingFinished(result: PipelineResult) {
+  Column(
+    modifier = Modifier.fillMaxSize()
+  ) {
+    result.steps.forEach { step ->
+      Text(
+        modifier = Modifier.padding(16.dp),
+        text = "${step.key} => ${step.output?.absolutePath ?: step.error}",
+        fontSize = 16.sp,
+      )
     }
   }
 }

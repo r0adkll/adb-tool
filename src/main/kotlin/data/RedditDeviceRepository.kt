@@ -49,8 +49,9 @@ class RedditDeviceRepository(
   }
 
   override suspend fun pullRecordingFromDevice(serial: String, filename: String): File? = withContext(Dispatchers.IO) {
-    val outputFile = File("recordings/$filename")//.apply { mkdirs() }
-    if (adb.execute(PullRequest("/sdcard/$filename", outputFile, emptyList()), serial)) {
+    val outputDirectory = File("./recordings").apply { mkdirs() }
+    val outputFile = File(outputDirectory, filename)
+    if (adb.execute(PullRequest("/sdcard/$filename", outputDirectory, emptyList()), serial)) {
       outputFile
     } else {
       null
