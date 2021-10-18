@@ -66,8 +66,13 @@ class ScreenRecordPresenter(
         val selectedDevice = app.selectedDevice.value ?: return@launch
         _state.value = State.Processing("Waiting for device...")
 
-        // Artificial delay giving the device time to process and finish screen recording
-        delay(5000L)
+        /*
+         * Artificial delay giving the device time to process and finish screen recording
+         *
+         * Fixme: This is gross AF. An alternative solution might be to use ffmpeg to validate the video file and if
+         *   it fails to attempt to re-fetch the video a limited # of times until it succeeds, or fails.
+         */
+        delay(7000L)
 
         val file = deviceRepository.pullRecordingFromDevice(selectedDevice.device.serial, activeFilename!!)
         if (file != null) {

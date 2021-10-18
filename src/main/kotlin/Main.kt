@@ -35,6 +35,7 @@ import ui.screenrecord.ScreenRecordScreen
 import ui.screenshot.ScreenShotScreen
 import java.io.File
 import javax.imageio.ImageIO
+import kotlin.system.exitProcess
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
@@ -46,26 +47,34 @@ fun main() {
   val app = AdbApplication()
   application {
     val trayState = rememberTrayState()
+    val selectedDevice by app.selectedDevice.collectAsState()
 
     Tray(
       state = trayState,
       icon = ImageIO.read(File("src/main/resources/baseline_android_white_24dp.png").inputStream()),
       menu = {
-        Item(
-          "Do Stuff",
-          onClick = {
-          }
-        )
-        Item(
-          "Do More stuff",
-          onClick = {
-          }
-        )
+        if (selectedDevice != null) {
+          Item(
+            text = "Device: ${selectedDevice?.title}",
+            onClick = {
+              // TODO: Send user back to root view?
+            }
+          )
+          Separator()
+          Item(
+            text = "Take Screenshot",
+            onClick = {
+
+            }
+          )
+        }
+
+
         Separator()
         Item(
-          "Refresh Devices",
+          "Close App",
           onClick = {
-
+            exitProcess(1)
           }
         )
       },
