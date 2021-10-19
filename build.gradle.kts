@@ -27,8 +27,6 @@ dependencies {
     // Logging
     implementation("io.github.microutils:kotlin-logging:1.12.5")
     implementation("org.slf4j:slf4j-simple:1.7.29")
-
-//    implementation("com.russhwolf:multiplatform-settings:0.8")
 }
 
 tasks.test {
@@ -42,10 +40,17 @@ tasks.withType<KotlinCompile>() {
 compose.desktop {
     application {
         mainClass = "MainKt"
+        javaHome = System.getenv("JDK_15")
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "adb-tool"
             packageVersion = "1.0.0"
+            description = "ADB Utility App"
+            vendor = "Reddit"
+
+            macOS {
+                bundleID = "com.reddit.adb"
+            }
         }
     }
 }

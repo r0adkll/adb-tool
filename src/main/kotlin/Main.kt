@@ -51,7 +51,7 @@ fun main() {
 
     Tray(
       state = trayState,
-      icon = ImageIO.read(File("src/main/resources/baseline_android_white_24dp.png").inputStream()),
+      icon = ImageIO.read(Resources.androidWhite),
       menu = {
         if (selectedDevice != null) {
           Item(
