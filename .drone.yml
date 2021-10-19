@@ -21,9 +21,9 @@ steps:
       - mv adb-tool.app.tar.gz /root/binaries/
     when:
       branch:
-        - main
+      - main
       event:
-        - push
+      - push
 
   - name: publish
     image: plugins/github-release
@@ -42,9 +42,9 @@ steps:
         - md5
     when:
       branch:
-        - main
+      - main
       event:
-        - push
+      - push
   depends_on:
     - build
 
