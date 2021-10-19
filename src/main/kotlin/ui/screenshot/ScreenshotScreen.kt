@@ -13,9 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.dp
 import di.LocalApplication
 import org.jetbrains.skija.Image.makeFromEncoded
@@ -32,7 +30,7 @@ fun ScreenShotScreen(backStack: BackStack<Routing>) {
   val presenter = remember {
     ScreenShotPresenter(app.selectedDevice)
   }
-  presenter.BindToComposable {
+  presenter.bindToComposable {
     presenter.takeScreenshot()
   }
 

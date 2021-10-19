@@ -27,7 +27,7 @@ abstract class ComposePresenter<State>(initialState: State) : KoinComponent {
   }
 
   @Composable
-  fun BindToComposable(onBind: DisposableEffectScope.() -> Unit = { }) {
+  fun bindToComposable(onBind: DisposableEffectScope.() -> Unit = { }) {
     DisposableEffect(Unit) {
       attach()
       onBind()
