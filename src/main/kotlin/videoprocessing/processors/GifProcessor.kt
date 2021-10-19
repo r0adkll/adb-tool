@@ -22,7 +22,9 @@ class GifProcessor(
      * so instead we write it to a bash file and execute it from there, cleaning up
      * the file when finished.
      */
-    val gifCmd = "ffmpeg -y -ss 0 -i ${videoFile.absolutePath} -filter_complex \"fps=30,scale=320:-1:flags=lanczos[x];[x]split[x1][x2];[x1]palettegen[p];[x2][p]paletteuse\" ${outputFile.absolutePath}"
+    val gifCmd = "ffmpeg -y -ss 0 -i ${videoFile.absolutePath} -filter_complex " +
+        "\"fps=30,scale=320:-1:flags=lanczos[x];[x]split[x1][x2];[x1]palettegen[p];[x2][p]paletteuse\"" +
+        " ${outputFile.absolutePath}"
     val shellFile = File(outputDir, "gif.sh")
     shellFile.writeText(gifCmd)
     shellFile.setExecutable(true)

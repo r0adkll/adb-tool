@@ -17,6 +17,7 @@ import di.LocalApplication
 import domain.model.VideoSize
 import router.BackStack
 import ui.Routing
+import ui.screenrecord.composables.RecordingFinished
 import ui.widgets.EmptyState
 import videoprocessing.PipelineResult
 
@@ -164,20 +165,5 @@ private fun Processing(message: String) {
     Text(
       text = message,
     )
-  }
-}
-
-@Composable
-private fun RecordingFinished(result: PipelineResult) {
-  Column(
-    modifier = Modifier.fillMaxSize()
-  ) {
-    result.steps.forEach { step ->
-      Text(
-        modifier = Modifier.padding(16.dp),
-        text = "${step.key} => ${step.output?.absolutePath ?: step.error}",
-        fontSize = 16.sp,
-      )
-    }
   }
 }

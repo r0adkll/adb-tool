@@ -43,7 +43,13 @@ data class PipelineResult(
   class Builder(private val initial: File) {
     var currentOutput: File = initial
       private set
-    private val steps = mutableListOf<Step>()
+
+    private val steps = mutableListOf(
+      Step(
+        key = "original",
+        output = initial,
+      )
+    )
 
     fun addStep(processor: VideoProcessor, output: File): Builder {
       steps += Step(processor.key, output)
