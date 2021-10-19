@@ -16,7 +16,7 @@ steps:
         path: /root/binaries
     commands:
       - export JDK_15=$JAVA_HOME
-      - ./gradlew --stacktrace --no-daemon liveaudio:createDistributable
+      - ./gradlew --stacktrace --no-daemon createDistributable
       - tar -czvf adb-tool.app.tar.gz /build/compose/binaries/main/app/adb-tool.app
       - mv adb-tool.app.tar.gz /root/binaries/
     when:
