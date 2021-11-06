@@ -30,6 +30,10 @@ jobs:
     - name: Build Packages
       run: ./gradlew createDistributable
       
+    - name: Confirm output
+      run: |
+        ls -la build/compose/binaries/main/app/*/
+      
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
