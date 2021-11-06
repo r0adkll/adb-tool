@@ -9,11 +9,14 @@ on:
 
 jobs:
   buildPackages:
-
-    runs-on: [ubuntu-latest, macos-11]
     permissions:
       contents: read
-
+      
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-11]
+        
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 11
