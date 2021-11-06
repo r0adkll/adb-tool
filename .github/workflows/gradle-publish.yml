@@ -27,17 +27,14 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-    # the publishing section of your build.gradle
     - name: Build Packages
       run: ./gradlew createDistributable
       
-    - name: Cache packages
-      uses: actions/cache@v2
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
       with:
-        path: |
-          build/compose/binaries/main/**
-        key: binaries
+        name: binaries-${{ matrix.os }}
+        path: build/**/adb-tool-*.*
         
   updateRelease:
     needs: buildPackages
@@ -47,14 +44,8 @@ jobs:
       contents: write
       
     steps:
-    - name: Cache node modules
-      uses: actions/cache@v2
-      with:
-        # npm cache files are stored in `~/.npm` on Linux/macOS
-        path: ~/binaries
-        key: binaries
-        restore-keys: |
-          binaries
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
 
     - name: Release
       uses: softprops/action-gh-release@v1
@@ -62,7 +53,7 @@ jobs:
         name: Latest Builds
         tag_name: latest
         files: |
-          ~/binaries/dmg/adb-tool-*.dmg
-          ~/binaries/deb/adb-tool-*.deb
+          adb-tool-*.dmg
+          adb-tool-*.deb
     
       
