@@ -32,12 +32,15 @@ jobs:
       
     - name: Confirm output
       run: |
-        ls -la build/compose/binaries/main/app/
+        ls -la build/compose/binaries/main/dmg/
+        ls -la build/compose/binaries/main/deb/
       
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        path: build/compose/binaries/main/app/*/
+        path: |
+          build/compose/binaries/main/dmg/
+          build/compose/binaries/main/deb/
         
   updateRelease:
     needs: buildPackages
