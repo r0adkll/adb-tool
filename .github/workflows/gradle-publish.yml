@@ -28,7 +28,7 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: Build Packages
-      run: ./gradlew createDistributable
+      run: ./gradlew package
       
     - name: Confirm output
       run: |
