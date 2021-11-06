@@ -32,8 +32,7 @@ jobs:
       
     - name: Confirm output
       run: |
-        ls -la build/compose/binaries/main/dmg/
-        ls -la build/compose/binaries/main/deb/
+        ls -R build/compose/binaries/main/
       
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
