@@ -32,7 +32,7 @@ jobs:
       
     - name: Confirm output
       run: |
-        ls -la build/compose/binaries/main/app/*/
+        ls -la build/compose/binaries/main/app/
       
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
