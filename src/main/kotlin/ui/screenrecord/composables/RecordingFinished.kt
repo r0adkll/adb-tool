@@ -37,15 +37,7 @@ fun RecordingFinished(result: PipelineResult) {
             .weight(1f)
         )
         result.steps.forEach {
-          FileOutput(
-            modifier = Modifier
-              .clickable {
-                it.output?.let { output ->
-                  Desktop.getDesktop().browseFileDirectory(output)
-                }
-              },
-            result = it
-          )
+          FileOutput(it)
         }
       }
       else -> {
@@ -68,17 +60,21 @@ fun RecordingFinished(result: PipelineResult) {
 
 @Composable
 fun FileOutput(
-  modifier: Modifier,
   result: PipelineResult.Step,
 ) {
   Column(
-    modifier = modifier
+    modifier = Modifier
       .padding(vertical = 8.dp, horizontal = 16.dp)
       .wrapContentWidth()
       .background(
         color = Color.Black.copy(alpha = .12f),
         shape = RoundedCornerShape(8.dp)
       )
+      .clickable {
+        result.output?.let { output ->
+          Desktop.getDesktop().open(output.parentFile)
+        }
+      }
       .padding(16.dp),
     verticalArrangement = Arrangement.Center,
   ) {
