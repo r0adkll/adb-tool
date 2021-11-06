@@ -1,0 +1,65 @@
+# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
+
+name: Build Packages
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  buildPackages:
+
+    runs-on: [ubuntu-latest, macos-11]
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '15'
+        distribution: 'adopt'
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
+
+    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+    # the publishing section of your build.gradle
+    - name: Build Packages
+      run: ./gradlew createDistributable
+      
+    - name: Cache packages
+      uses: actions/cache@v2
+      with:
+        path: |
+          build/compose/binaries/main/**
+        key: binaries
+        
+  updateRelease:
+    needs: buildPackages
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+    - name: Cache node modules
+      uses: actions/cache@v2
+      with:
+        # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: ~/binaries
+        key: binaries
+        restore-keys: |
+          binaries
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Latest Builds
+        tag_name: latest
+        files: |
+          ~/binaries/dmg/adb-tool-*.dmg
+          ~/binaries/deb/adb-tool-*.deb
+    
+      
