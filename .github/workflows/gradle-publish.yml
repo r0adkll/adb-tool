@@ -61,7 +61,7 @@ jobs:
         name: Latest Builds
         tag_name: latest
         files: |
-          artifact/adb-tool*.dmg
-          artifact/adb-tool*.deb
+          artifact/dmg/adb-tool*.dmg
+          artifact/deb/adb-tool*.deb
     
       
